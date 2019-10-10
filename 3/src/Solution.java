@@ -1,50 +1,72 @@
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @Author: zxs
- * @Date: 2019/8/27 23:43
+ * @Date: 2019/10/10 19:17
+ *
+ * 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+ *
+ * 示例 1:
+ *
+ * 输入: "abcabcbb"
+ * 输出: 3
+ * 解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+ * 示例 2:
+ *
+ * 输入: "bbbbb"
+ * 输出: 1
+ * 解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+ * 示例 3:
+ *
+ * 输入: "pwwkew"
+ * 输出: 3
+ * 解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+ *      请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+ *
+ * 来源：力扣（LeetCode）
+ * 链接：https://leetcode-cn.com/problems/longest-substring-without-repeating-characters
+ * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class Solution {
-    public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    /**
+     *解题思路：滑动窗口
+     * 1 由于字串中是不含有重复的字符，所以可以从最开始开始遍历字符串
+     * 2 使用一个set存放以及遍历过的字符，使用一个变量index用来存放刚开始字符所在位置的下标
+     * 3 假如遍历的字符没有在set里，那么目前的最长长度为max(len,curIndex - index + 1)
+     * 4 假如当前的字符已经存在，那么修改index的值为当前字符所在位置的下标
+     * 5 重复上述步骤直到遍历完成
+     */
+    public static int lengthOfLongestSubstring(String s) {
+        int res = 0;
+        Set<Character> set = new HashSet<>();
+        int len = s.length();
+        int i = 0,j = 0;
 
-        int n = nums1.length;
-  		int m = nums2.length;
-
-        if (n > m){
-            return findMedianSortedArrays(nums2,nums1);
+        while (i < len && j < len){
+            if (!set.contains(s.charAt(j))){
+                set.add(s.charAt(j++));
+                res = Math.max(res,j - i);
+            }else {
+                set.remove(s.charAt(i++));
+            }
         }
 
-        int lMax1 = Integer.MIN_VALUE;
-        int lMax2 = Integer.MIN_VALUE;
-        int rMin1 = Integer.MAX_VALUE;
-        int rMin2 = Integer.MAX_VALUE;
-        int c1, c2, lo = 0, hi = 2 * n;
+        return res;
+    }
 
-        while (lo <= hi) {
-  			c1 = (lo + hi) / 2;
-  			c2 = m + n - c1;
+    public static int lengthOfLongestSubstringMap(String s){
 
-  			lMax1 = (c1 == 0) ? Integer.MIN_VALUE : nums1[(c1 - 1) / 2];
-  			rMin1 = (c1 == 2 * n) ? Integer.MAX_VALUE : nums1[c1 / 2];
-  			lMax2 = (c2 == 0) ? Integer.MIN_VALUE : nums2[(c2 - 1) / 2];
-  			rMin2 = (c2 == 2 * m) ?Integer.MAX_VALUE : nums2[c2 / 2];
-
-  			if (lMax1 > rMin2){
-                hi = c1 - 1;
-            } else if (lMax2 > rMin1){
-                lo = c1 + 1;
-            } else{
-                break;
-            }
-
-         }
-        int left = Integer.max(lMax1, lMax2);
-        int right = Integer.min(rMin1, rMin2);
-  		return ( left + right ) / 2.0;
+        return 0;
     }
 
     public static void main(String[] args) {
-        int[] a = {1,3};
-        int[] b = {2};
-        double medianSortedArrays = findMedianSortedArrays(a, b);
-        System.out.println(medianSortedArrays);
+        String str1 = "bbbbbbbbbbb";
+        String str2 = "pwwkew";
+        String str3 = "dvdf";
+
+        System.out.println(lengthOfLongestSubstring(str1));
+        System.out.println(lengthOfLongestSubstring(str2));
+        System.out.println(lengthOfLongestSubstring(str3));
     }
 }
